@@ -28,7 +28,7 @@ foreach ($mod in $subModules) {
             }
         }
         catch {
-            Write-Warning "Failed to import or run $modName: $_"
+            Write-Warning "Failed to import or run $modName: $($_.Exception.Message)"
         }
     }
 }
