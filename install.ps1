@@ -16,6 +16,10 @@ $dest     = Join-Path $basePath $ModuleName
 $tempZip  = Join-Path $env:TEMP "$ModuleName.zip"
 $tempDir  = Join-Path $env:TEMP "$ModuleName"
 
+#
+Remove-Module nosleepmode
+remove-module winmgmt
+
 # Clean up any previous temp files
 if (Test-Path $tempZip) { Remove-Item $tempZip -Force }
 if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
