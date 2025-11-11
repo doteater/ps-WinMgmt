@@ -31,6 +31,7 @@ function Remove-Junk {
       "*AdvancedMicroDevicesInc-2.AMDRadeonSoftware*"
       "*Microsoft.StartExperiencesApp*"
       "*Microsoft.OneDrive*"
+      "*microsoft.windowscommunicationsapps*"
   )
   
   # Remove apps for all existing users
