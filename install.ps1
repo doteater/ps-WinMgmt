@@ -5,15 +5,11 @@ param(
     [string]$Scope = "AllUsers"
 )
 
-# Decide destination based on scope and PS version
-if ($PSVersionTable.PSVersion.Major -ge 6) {
-    $basePath = ($Scope -eq "User") ?
-        (Join-Path $env:USERPROFILE "Documents\PowerShell\Modules") :
-        "C:\Program Files\PowerShell\Modules"
+# Decide destination based on scope
+if ($Scope -eq "User") {
+    $basePath = Join-Path $env:USERPROFILE "Documents\WindowsPowerShell\Modules"
 } else {
-    $basePath = ($Scope -eq "User") ?
-        (Join-Path $env:USERPROFILE "Documents\WindowsPowerShell\Modules") :
-        "C:\Program Files\WindowsPowerShell\Modules"
+    $basePath = "C:\Program Files\WindowsPowerShell\Modules"
 }
 
 $dest = Join-Path $basePath $ModuleName
