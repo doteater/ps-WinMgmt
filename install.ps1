@@ -1,0 +1,42 @@
+param(
+    [string]$RepoUrl = "https://github.com/doteater/ps-WinMgmt/archive/refs/heads/main.zip",
+    [string]$ModuleName = "WinMgmt",
+    [ValidateSet("User","AllUsers")]
+    [string]$Scope = "AllUsers"
+)
+
+# Decide destination based on scope and PS version
+if ($PSVersionTable.PSVersion.Major -ge 6) {
+    $basePath = ($Scope -eq "User") ?
+        (Join-Path $env:USERPROFILE "Documents\PowerShell\Modules") :
+        "C:\Program Files\PowerShell\Modules"
+} else {
+    $basePath = ($Scope -eq "User") ?
+        (Join-Path $env:USERPROFILE "Documents\WindowsPowerShell\Modules") :
+        "C:\Program Files\WindowsPowerShell\Modules"
+}
+
+$dest = Join-Path $basePath $ModuleName
+
+# Download the repo zip
+$tempZip = Join-Path $env:TEMP "$ModuleName.zip"
+Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
+
+# Extract
+$tempDir = Join-Path $env:TEMP "$ModuleName"
+Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
+
+# Copy module folder into PowerShell Modules path
+$sourceDir = Get-ChildItem $tempDir -Directory | Select-Object -First 1
+Copy-Item -Path $sourceDir.FullName -Destination $dest -Recurse -Force
+
+Write-Host "Module installed to $dest"
+
+# Call the master script inside ps-WinMgmt
+$masterScript = Join-Path $dest "Master.ps1"
+if (Test-Path $masterScript) {
+    Write-Host "Running master script: $masterScript"
+    & $masterScript
+} else {
+    Write-Warning "Master.ps1 not found in $dest"
+}
