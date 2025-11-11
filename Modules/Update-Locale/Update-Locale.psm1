@@ -1,9 +1,9 @@
 function Update-Locale {
     [CmdletBinding()]
-    #param(
+    param(
         #[Parameter(Mandatory = $true)]
         #[bool]$Enable
-    #)
+    )
     Write-Host "=== Update-Locale Script ==="
     Write-Host "installing language"
     Install-Language -Language en-US
