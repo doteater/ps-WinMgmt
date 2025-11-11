@@ -5,33 +5,39 @@ param(
     [string]$Scope = "AllUsers"
 )
 
-# Decide destination based on scope
+# Decide destination based on scope (Windows PowerShell only)
 if ($Scope -eq "User") {
     $basePath = Join-Path $env:USERPROFILE "Documents\WindowsPowerShell\Modules"
 } else {
     $basePath = "C:\Program Files\WindowsPowerShell\Modules"
 }
 
-$dest = Join-Path $basePath $ModuleName
+$dest     = Join-Path $basePath $ModuleName
+$tempZip  = Join-Path $env:TEMP "$ModuleName.zip"
+$tempDir  = Join-Path $env:TEMP "$ModuleName"
 
-# Download the repo zip
-$tempZip = Join-Path $env:TEMP "$ModuleName.zip"
+# Clean up any previous temp files
+if (Test-Path $tempZip) { Remove-Item $tempZip -Force }
+if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
+
+# Download fresh repo zip
 Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
 
-# Extract
-$tempDir = Join-Path $env:TEMP "$ModuleName"
+# Extract to temp
 Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
 
-# Remove old copy if it exists
-if (Test-Path $dest) {
-    Remove-Item $dest -Recurse -Force
-}
+# Remove old installed copy
+if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
 
-# Copy module folder into PowerShell Modules path
+# Copy new module into place
 $sourceDir = Get-ChildItem $tempDir -Directory | Select-Object -First 1
 Copy-Item -Path $sourceDir.FullName -Destination $dest -Recurse -Force
 
 Write-Host "Module installed to $dest"
+
+# Clean up temp files
+Remove-Item $tempZip -Force
+Remove-Item $tempDir -Recurse -Force
 
 # Call the Main script inside ps-WinMgmt
 $mainScript = Join-Path $dest "Main.ps1"
