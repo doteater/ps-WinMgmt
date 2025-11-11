@@ -1,7 +1,7 @@
 Write-Host "=== ps-WinMgmt Main Script ==="
 
 # Path to the Modules folder inside WinMgmt
-$moduleRoot = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "Modules"
+$moduleRoot = Join-Path $MyInvocation.MyCommand.Path "Modules"
 $subModules = Get-ChildItem -Path $moduleRoot -Directory
 
 foreach ($mod in $subModules) {
