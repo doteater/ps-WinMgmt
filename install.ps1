@@ -32,6 +32,7 @@ Write-Host "Module installed to $dest"
 $mainScript = Join-Path $dest "Main.ps1"
 if (Test-Path $mainScript) {
     Write-Host "Running main script: $mainScript"
+    set-executionpolicy unrestricted -scope process
     & $mainScript
 } else {
     Write-Warning "Main.ps1 not found in $dest"
