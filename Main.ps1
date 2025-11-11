@@ -4,7 +4,10 @@ Write-Host "=== ps-WinMgmt Main Script ==="
 $moduleRoot = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "Modules"
 $subModules = Get-ChildItem -Path $moduleRoot -Directory
 
+write "found sub-modules: $submodules"
+
 foreach ($mod in $subModules) {
+    write "processing submodule $mod"
     $modName = $mod.Name
     $psm1 = Join-Path $mod.FullName "$modName.psm1"
 
