@@ -14,7 +14,7 @@ Import-Module NoSleepMode -ErrorAction SilentlyContinue
 if ($RunAll -or (-not $NoSleepMode -and -not $OtherModule)) {
     Write-Host "Running all modules..."
     Set-NoSleepMode -Enable $true
-    Invoke-OtherModule
+    #Invoke-OtherModule
 }
 else {
     if ($NoSleepMode) {
