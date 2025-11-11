@@ -1,7 +1,7 @@
 Write-Host "=== ps-WinMgmt Main Script ==="
 
-# Get all subfolders under the WinMgmt module directory
-$moduleRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Path to the Modules folder inside WinMgmt
+$moduleRoot = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "Modules"
 $subModules = Get-ChildItem -Path $moduleRoot -Directory
 
 foreach ($mod in $subModules) {
@@ -13,7 +13,7 @@ foreach ($mod in $subModules) {
             Write-Host "Importing module: $modName"
             Import-Module $psm1 -Force -ErrorAction Stop
 
-            # Try to run a default entry point if it exists
+            # Run default entry point if defined
             $defaultFunc = "Invoke-$modName"
             if (Get-Command $defaultFunc -ErrorAction SilentlyContinue) {
                 Write-Host "Running $defaultFunc..."
