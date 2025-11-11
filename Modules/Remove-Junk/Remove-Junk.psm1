@@ -33,6 +33,7 @@ function Remove-Junk {
       "*Microsoft.OneDrive*"
       "*microsoft.windowscommunicationsapps*"
       "*microsoft.windowsmaps*"
+      "*microsoft.people*"
   )
   
   # Remove apps for all existing users
