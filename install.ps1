@@ -28,11 +28,11 @@ Copy-Item -Path $sourceDir.FullName -Destination $dest -Recurse -Force
 
 Write-Host "Module installed to $dest"
 
-# Call the master script inside ps-WinMgmt
-$masterScript = Join-Path $dest "Master.ps1"
-if (Test-Path $masterScript) {
-    Write-Host "Running master script: $masterScript"
-    & $masterScript
+# Call the Main script inside ps-WinMgmt
+$mainScript = Join-Path $dest "Main.ps1"
+if (Test-Path $mainScript) {
+    Write-Host "Running main script: $mainScript"
+    & $mainScript
 } else {
-    Write-Warning "Master.ps1 not found in $dest"
+    Write-Warning "Main.ps1 not found in $dest"
 }
