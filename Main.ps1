@@ -1,36 +1,36 @@
-param(
-    [switch]$RunAll,
-    [switch]$NoSleepMode,
-    [switch]$Update-Locale,
-    [switch]$OtherModule
-)
-
 Write-Host "=== ps-WinMgmt Main Script ==="
 
-#Import-Module NoSleepMode -ErrorAction SilentlyContinue
-Import-Module Update-Locale -ErrorAction SilentlyContinue
-#Import-Module OtherModule -ErrorAction SilentlyContinue
+# Get all subfolders under the WinMgmt module directory
+$moduleRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$subModules = Get-ChildItem -Path $moduleRoot -Directory
 
-# Default behavior: run everything if no switches are provided
-if ($RunAll -or (-not $NoSleepMode -and -not $OtherModule)) {
-    Write-Host "Running all modules..."
-    #Set-NoSleepMode -Enable $true
-    Update-Locale
-    #Invoke-OtherModule
-}
-else {
-    if ($NoSleepMode) {
-        Write-Host "Running NoSleepMode..."
-        Set-NoSleepMode -Enable $true
+foreach ($mod in $subModules) {
+    $modName = $mod.Name
+    $psm1 = Join-Path $mod.FullName "$modName.psm1"
+
+    if (Test-Path $psm1) {
+        try {
+            Write-Host "Importing module: $modName"
+            Import-Module $psm1 -Force -ErrorAction Stop
+
+            # Try to run a default entry point if it exists
+            $defaultFunc = "Invoke-$modName"
+            if (Get-Command $defaultFunc -ErrorAction SilentlyContinue) {
+                Write-Host "Running $defaultFunc..."
+                & $defaultFunc
+            }
+            elseif (Get-Command "Set-$modName" -ErrorAction SilentlyContinue) {
+                Write-Host "Running Set-$modName..."
+                & ("Set-$modName") -Enable $true
+            }
+            else {
+                Write-Host "No default function found for $modName, imported only."
+            }
+        }
+        catch {
+            Write-Warning "Failed to import or run $modName: $_"
+        }
     }
-    if ($Update-Locale) {
-        Write-Host "Running Update-Locale..."
-        Update-Locale
-    }
-    #if ($OtherModule) {
-    #    Write-Host "Running OtherModule..."
-    #    Invoke-OtherModule
-    #}
 }
 
 Write-Host "=== ps-WinMgmt Main Script Complete ==="
