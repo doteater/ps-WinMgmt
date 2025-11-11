@@ -32,6 +32,7 @@ function Remove-Junk {
       "*Microsoft.StartExperiencesApp*"
       "*Microsoft.OneDrive*"
       "*microsoft.windowscommunicationsapps*"
+      "*microsoft.windowsmaps*"
   )
   
   # Remove apps for all existing users
