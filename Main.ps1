@@ -4,12 +4,13 @@ param(
     [switch]$OtherModule
 )
 
-Write-Host "=== ps-WinMgmt Master Script ==="
+Write-Host "=== ps-WinMgmt Main Script ==="
 
-# Import modules (adjust paths if needed)
+# Import modules (adjust names/paths as needed)
 Import-Module NoSleepMode -ErrorAction SilentlyContinue
 Import-Module OtherModule -ErrorAction SilentlyContinue
 
+# Default behavior: run everything if no switches are provided
 if ($RunAll -or (-not $NoSleepMode -and -not $OtherModule)) {
     Write-Host "Running all modules..."
     Set-NoSleepMode -Enable $true
@@ -26,4 +27,4 @@ else {
     }
 }
 
-Write-Host "=== ps-WinMgmt Master Script Complete ==="
+Write-Host "=== ps-WinMgmt Main Script Complete ==="
