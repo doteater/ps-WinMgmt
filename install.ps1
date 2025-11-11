@@ -22,6 +22,11 @@ Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
 $tempDir = Join-Path $env:TEMP "$ModuleName"
 Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
 
+# Remove old copy if it exists
+if (Test-Path $dest) {
+    Remove-Item $dest -Recurse -Force
+}
+
 # Copy module folder into PowerShell Modules path
 $sourceDir = Get-ChildItem $tempDir -Directory | Select-Object -First 1
 Copy-Item -Path $sourceDir.FullName -Destination $dest -Recurse -Force
@@ -32,7 +37,7 @@ Write-Host "Module installed to $dest"
 $mainScript = Join-Path $dest "Main.ps1"
 if (Test-Path $mainScript) {
     Write-Host "Running main script: $mainScript"
-    set-executionpolicy unrestricted -scope process
+    Set-ExecutionPolicy Unrestricted -Scope Process
     & $mainScript
 } else {
     Write-Warning "Main.ps1 not found in $dest"
