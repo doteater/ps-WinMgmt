@@ -42,6 +42,8 @@ function Remove-Junk {
       "Microsoft.SkypeApp"
       "Microsoft.XboxApp"
       "Microsoft.XboxGameOverlay"
+      "Microsoft.MSPaint"
+      "MicrosoftWindows.Client.WebExperience"
 
   )
   
@@ -178,3 +180,7 @@ function Remove-Junk {
   
   Write-Host "`nOneDrive removal complete!" -ForegroundColor Green
 }
+
+
+Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "Microsoft Update Health Tools*" } | ForEach-Object { $_.Uninstall() }
+
