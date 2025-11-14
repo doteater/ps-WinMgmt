@@ -34,6 +34,15 @@ function Remove-Junk {
       "*microsoft.windowscommunicationsapps*"
       "*microsoft.windowsmaps*"
       "*microsoft.people*"
+      "Microsoft.549981C3F5F10" #cortana
+      "Microsoft.Microsoft3DViewer"
+      "Microsoft.Wallet"
+      "MicrosoftTeams"
+      "Microsoft.Office.OneNote"
+      "Microsoft.SkypeApp"
+      "Microsoft.XboxApp"
+      "Microsoft.XboxGameOverlay"
+
   )
   
   # Remove apps for all existing users
