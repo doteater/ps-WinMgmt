@@ -28,7 +28,8 @@ function Apply-Optimizer {
     $exePath  = Join-Path $tempDir "o.exe"
     
     # JSON content
-    $jsonContent = @'
+    $jsonContent = \
+@'
     {
         "WindowsVersion": 11,
         "PostAction": {
@@ -177,7 +178,7 @@ function Apply-Optimizer {
             "DisableNewsInterests": true
         }
     }
-    '@
+'@
     
     # Write JSON to file (force overwrite)
     $jsonContent | Set-Content -Path $jsonPath -Force -Encoding UTF8
