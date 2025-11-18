@@ -332,5 +332,5 @@ function Apply-Optimizer {
     Invoke-WebRequest -Uri $downloadUrl -OutFile $exePath 
 
     # Run executable with config
-    & $exePath "/config:$jsonPath"
+    & $exePath "/config=$jsonPath"
 }
