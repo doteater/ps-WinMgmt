@@ -16,18 +16,12 @@ $dest     = Join-Path $basePath $ModuleName
 $tempZip  = Join-Path $env:TEMP "$ModuleName.zip"
 $tempDir  = Join-Path $env:TEMP "$ModuleName"
 
-#
-Remove-Module nosleepmode
-remove-module winmgmt
-
 # Clean up any previous temp files
 if (Test-Path $tempZip) { Remove-Item $tempZip -Force }
 if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
 
 # Download fresh repo zip
 Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
-
-# Extract to temp
 Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
 
 # Remove old installed copy
@@ -43,12 +37,16 @@ Write-Host "Module installed to $dest"
 Remove-Item $tempZip -Force
 Remove-Item $tempDir -Recurse -Force
 
-# Call the Main script inside ps-WinMgmt
-$mainScript = Join-Path $dest "Main.ps1"
-if (Test-Path $mainScript) {
-    Write-Host "Running main script: $mainScript"
-    Set-ExecutionPolicy Unrestricted -Scope Process
-    & $mainScript
-} else {
-    Write-Warning "Main.ps1 not found in $dest"
-}
+# --- Create a master manifest for WinMgmt ---
+$manifestPath = Join-Path $dest "$ModuleName.psd1"
+New-ModuleManifest -Path $manifestPath `
+    -RootModule "$ModuleName.psm1" `
+    -ModuleVersion "1.0.0" `
+    -Author "YourName" `
+    -Description "Master module that loads all submodules" `
+    -NestedModules @(
+        "Modules\Install-Winget-For-System\Install-Winget-For-System.psm1",
+        "Modules\Remove-Junk\Remove-Junk.psm1"
+    )
+
+Write-Host "Created master manifest: $manifestPath"
