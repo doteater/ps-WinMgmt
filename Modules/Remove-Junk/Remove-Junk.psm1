@@ -79,9 +79,6 @@ function Remove-Junk {
   ##
   ####
   
-  ### DESTROY ALL ONEDRIVES
-  EXCEPT FOR THE CTR O365 one I gues...
-  
   # Silent uninstall flags for OneDriveSetup.exe
   $silentArgs = "/uninstall /allusers"
   
