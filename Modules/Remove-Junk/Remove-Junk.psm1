@@ -175,6 +175,9 @@ function Remove-Junk {
       }
   }
   
+  import-module Install-Winget-For-System
+  Install-Winget-For-System
+
   winget uninstall microsoft.onedrive  --all  --scope user --silent --force  --accept-source-agreements   --disable-interactivity 
   winget uninstall microsoft.onedrive  --all  --scope machine --silent --force  --accept-source-agreements   --disable-interactivity 
   
