@@ -5,48 +5,58 @@ param(
     [string]$Scope = "AllUsers"
 )
 
-# Decide destination based on scope (Windows PowerShell only)
-if ($Scope -eq "User") {
-    $basePath = Join-Path $env:USERPROFILE "Documents\WindowsPowerShell\Modules"
-} else {
-    $basePath = "C:\Program Files\WindowsPowerShell\Modules"
+
+$stagingDir = "$Env:temp\ps-WinMgmt-staging"
+
+$allUsersModuleRoot = Join-Path $env:ProgramFiles 'WindowsPowerShell\Modules'  # Windows PowerShell
+if (-not (Test-Path $allUsersModuleRoot)) {
+    $allUsersModuleRoot = Join-Path $env:ProgramFiles 'PowerShell\Modules'     # PowerShell 7+
 }
 
-$dest     = Join-Path $basePath $ModuleName
-$tempZip  = Join-Path $env:TEMP "$ModuleName.zip"
-$tempDir  = Join-Path $env:TEMP "$ModuleName"
 
-# Clean up any previous temp files
-if (Test-Path $tempZip) { Remove-Item $tempZip -Force }
+# Clean up any previous stuff
+if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force }
 if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
 
 # Download fresh repo zip
-Invoke-WebRequest -Uri $RepoUrl -OutFile $tempZip -UseBasicParsing
-Expand-Archive -Path $tempZip -DestinationPath $tempDir -Force
+New-Item -ItemType Directory $stagingDir
+Invoke-RestMethod -Uri $RepoUrl -OutFile $stagingDir\repo.zip
+Expand-Archive -Path $stagingDir\repo.zip -DestinationPath $stagingDir -Force
 
-# Remove old installed copy
-if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
+#cd $stagingDir
 
-# Copy new module into place
-$sourceDir = Get-ChildItem $tempDir -Directory | Select-Object -First 1
-Copy-Item -Path $sourceDir.FullName -Destination $dest -Recurse -Force
+$sourceRoot = Join-Path $stagingDir\ps-WinMgmt-main 'Modules'
 
-Write-Host "Module installed to $dest"
+$allUsersModuleRoot = Join-Path $env:ProgramFiles 'WindowsPowerShell\Modules'  # Windows PowerShell
+if (-not (Test-Path $allUsersModuleRoot)) {
+    $allUsersModuleRoot = Join-Path $env:ProgramFiles 'PowerShell\Modules'     # PowerShell 7+
+}
 
-# Clean up temp files
-Remove-Item $tempZip -Force
-Remove-Item $tempDir -Recurse -Force
+Write-Host "Installing modules from: $sourceRoot"
+Write-Host "Target module path:      $allUsersModuleRoot"
 
-# --- Create a master manifest for WinMgmt ---
-$manifestPath = Join-Path $dest "$ModuleName.psd1"
-New-ModuleManifest -Path $manifestPath `
-    -RootModule "$ModuleName.psm1" `
-    -ModuleVersion "1.0.0" `
-    -Author "YourName" `
-    -Description "Master module that loads all submodules" `
-    -NestedModules @(
-        "Modules\Install-Winget-For-System\Install-Winget-For-System.psm1",
-        "Modules\Remove-Junk\Remove-Junk.psm1"
-    )
+Get-ChildItem -Path $sourceRoot -Directory | ForEach-Object {
+    $moduleFolder = $_
+    $moduleName   = $moduleFolder.Name
+    $psm1Path     = Join-Path $moduleFolder.FullName "$moduleName.psm1"
 
-Write-Host "Created master manifest: $manifestPath"
+    if (-not (Test-Path $psm1Path)) {
+        Write-Warning "Skipping '$moduleName' – file '$moduleName.psm1' not found in folder."
+        return
+    }
+
+    $targetPath = Join-Path $allUsersModuleRoot $moduleName
+
+    if (-not (Test-Path $targetPath)) {
+        New-Item -ItemType Directory -Path $targetPath -Force | Out-Null
+    }
+
+    Copy-Item -Path $psm1Path -Destination (Join-Path $targetPath "$moduleName.psm1") -Force
+    Write-Host "Installed module: $moduleName"
+}
+
+Write-Host ""
+Write-Host "Modules now available (by folder name) in all-users path:"
+Get-ChildItem -Path $allUsersModuleRoot -Directory | Select-Object -ExpandProperty name
+
+#----
