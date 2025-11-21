@@ -7,8 +7,14 @@ function Apply-Policies {
   #prevent enabling bitlocker
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "SYSTEM\CurrentControlSet\Control\BitLocker" "PreventDeviceEncryption" 1 DWord
   
-  #update time zone automatically
+  ##update time zone automatically
+  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location' -Name 'Value' -Value 'Allow' -Type String
+  # Ensure per-machine policy isn't blocking location (if present)
+  Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors' -Name 'DisableLocation' -ErrorAction SilentlyContinue
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "SYSTEM\CurrentControlSet\Services\tzautoupdate" "Start" 3 DWord
+  #restart service to take effect
+  Start-Service -Name tzautoupdate -ErrorAction SilentlyContinue
+
   
   #disable MS Office MS Account sign-in button
   Set-RegistryValue "HKEY_CURRENT_USER" "SOFTWARE\Microsoft\Office\16.0\Common\SignIn" "SignInOptions" 3 DWord
