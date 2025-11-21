@@ -77,7 +77,7 @@ function Install-Winget-For-System {
         try {
             New-Item -ItemType Directory -Path "${env:ProgramData}\\Microsoft.DesktopAppInstaller" -Force | Out-Null
             Write-Host "Extracting WinGet..."
-            & "$7zipFolder\\7za.exe" x $bundlePath -o"$stageFolder" -y
+            & "$7zipFolder\\7za.exe" x $bundlePath -o"$stageFolder" -y 'AppInstaller_x64.msix'
             & "$7zipFolder\\7za.exe" x "$stageFolder\\AppInstaller_x64.msix" -o"${env:ProgramData}\\Microsoft.DesktopAppInstaller" -y
         }
         catch {
