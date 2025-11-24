@@ -5,6 +5,7 @@ function Update-LenovoTVSU {
         Register-PSRepository -Default
     }
     Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+    Install-PackageProvider -Name NuGet -Force
 
     Install-Module -Name 'LSUClient'
     $updates = Get-LSUpdate | Where-Object { $_.Installer.Unattended }
