@@ -1,9 +1,5 @@
 function Install-Winget-For-System {
     function Download-Winget {
-        <#
-        .SYNOPSIS
-        Download Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle and extract contents with 7zip cli to %ProgramData%
-        #>
         $ProgressPreference = 'SilentlyContinue'
         $7zipFolder = "${env:WinDir}\\Temp\\7zip"
         $stageFolder = "${env:WinDir}\\Temp\\WinGet-Stage"
@@ -91,45 +87,64 @@ function Install-Winget-For-System {
             exit 1
         }
     
-        $Script:WinGet = "${env:ProgramData}\\Microsoft.DesktopAppInstaller\\WinGet.exe"
+        $Global:winget = "${env:ProgramData}\\Microsoft.DesktopAppInstaller\\WinGet.exe"
+        Write-Host "WinGet available at $Global:winget"
     }
 
     
     
     
-    function Install-VisualC {
+function Install-VisualC {
+    # Check if VC++ Redistributable is already installed
+    $vcInstalled = Get-ItemProperty `
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" ,
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" `
+        -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -like "Microsoft Visual C++*Redistributable*" -and $_.DisplayName -like "*2022*" }
+
+    if ($vcInstalled) {
+        Write-Output "Visual C++ Redistributable is already installed. Skipping installation."
+        return 0
+    }
+
+    try {
+        $downloadurl = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
+        $WebClient = New-Object System.Net.WebClient
+        $WebClient.DownloadFile($downloadurl, "$env:Temp\vc_redist.x64.exe")
+        $WebClient.Dispose()
+    }
+    catch {
+        Write-Output "Failed to download Visual C++!"
+        Write-Output $_.Exception.Message
+        return 1
+    }
+
+    # Check if another installation is in progress, then wait for it to complete
+    $MSIExecCheck = Get-Process | Where-Object { $_.ProcessName -eq 'msiexec' }
+    if ($Null -ne $MSIExecCheck) {
+        Write-Output "Another MSI installation is in progress. Waiting for process to complete..."
+        Wait-Process msiexec
+        Write-Output "Continuing installation..."
+    }
+
+    try {
+        $Install = Start-Process "$env:Temp\vc_redist.x64.exe" -ArgumentList "/q /norestart" -Wait -PassThru
+        Write-Output "Installation completed with exit code $($Install.ExitCode)"
+        return $Install.ExitCode
+    }
+    catch {
+        Write-Output $_.Exception.Message
+        return 1
+    }
+    finally {
         try {
-            $downloadurl = 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
-            $WebClient = New-Object System.Net.WebClient
-            $WebClient.DownloadFile($downloadurl, "$env:Temp\vc_redist.x64.exe")
-            $WebClient.Dispose()
+            Remove-Item "$env:Temp\vc_redist.x64.exe" -ErrorAction SilentlyContinue
         }
         catch {
-            write "Failed to download Visual C++!"
-            write $_.Exception.Message
-        }
-        # Check if another installation is in progress, then wait for it to complete
-        $MSIExecCheck = Get-Process | Where-Object {$_.processname -eq 'msiexec'}
-        if ($Null -ne $MSIExecCheck){
-            write "another msi installation is in progress. Waiting for process to complete..."
-            Wait-Process msiexec
-            write "Continuing installation..."
-        }
-        try {
-            $Install = start-process "$env:temp\vc_redist.x64.exe" -argumentlist "/q /norestart" -Wait -PassThru
-            write "Installation completed with exit code $($Install.ExitCode)"
-            return $Install.ExitCode
-        }
-        catch {
-            write $_.Exception.Message
-        }
-        try {
-            remove-item "$env:Temp\vc_redist.x64.exe"
-        }
-        catch {
-            write "Failed to remove vc_redist.x64.exe after installation"
+            Write-Output "Failed to remove vc_redist.x64.exe after installation"
         }
     }
+}
 
     download-winget
 
