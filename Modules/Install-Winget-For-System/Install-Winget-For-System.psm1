@@ -152,4 +152,18 @@ function Install-VisualC {
     download-winget
 
     install-visualc
+
+    function global:winget {
+    param(
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$Args
+    )
+
+    # Path to winget.exe (adjust if needed)
+    $wingetPath = "C:\ProgramData\Microsoft.DesktopAppInstaller\winget.exe"
+
+    # Call winget.exe with all arguments passed through
+    & $wingetPath @Args
+}
+
 }
