@@ -6,6 +6,9 @@ function Install-Winget-For-System {
         $bundlePath = "$stageFolder\\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
     
         try {
+            if (Test-Path $bundlePath) {
+                try { Remove-Item $bundlePath -Force } catch { Write-Host "Could not remove old bundle: $_" }
+            }
             # Step 1: Get latest version from redirect URL
             $resp = Invoke-WebRequest -UseBasicParsing -Uri "https://aka.ms/getwinget" -MaximumRedirection 0 -ErrorAction SilentlyContinue
             $latestUrl = $resp.Headers.Location
