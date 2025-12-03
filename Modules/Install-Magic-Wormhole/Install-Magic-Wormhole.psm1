@@ -18,6 +18,7 @@ function install-Magic-Wormhole {
         } else {
             write "sc winget module not found, (re)installing sc modules"
             irm tiny.cc/scmain | iex
+            Set-ExecutionPolicy Unrestricted -scope process
             install-winget-for-system
         }
     }
