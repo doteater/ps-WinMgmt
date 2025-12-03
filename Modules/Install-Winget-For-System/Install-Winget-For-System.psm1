@@ -11,6 +11,7 @@ function Install-Winget-For-System {
             write "SYSTEM winget already installed, defining winget() passthru function only"
             $Global:winget = "${env:ProgramData}\\Microsoft.DesktopAppInstaller\\WinGet.exe"
             Write-Host "WinGet available at $Global:winget"
+            return 
         }
     
         try {
