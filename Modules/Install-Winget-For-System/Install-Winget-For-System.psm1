@@ -4,6 +4,14 @@ function Install-Winget-For-System {
         $7zipFolder = "${env:WinDir}\\Temp\\7zip"
         $stageFolder = "${env:WinDir}\\Temp\\WinGet-Stage"
         $bundlePath = "$stageFolder\\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
+
+        $wingetInstalled = Get-ItemProperty -Path C:\ProgramData\Microsoft.DesktopAppInstaller\winget.exe
+
+        if($wingetInstalled) {
+            write "SYSTEM winget already installed, defining winget() passthru function only"
+            $Global:winget = "${env:ProgramData}\\Microsoft.DesktopAppInstaller\\WinGet.exe"
+            Write-Host "WinGet available at $Global:winget"
+        }
     
         try {
             if (Test-Path $bundlePath) {
