@@ -174,8 +174,7 @@ function Apply-Optimizer {
         }
     }
 '@
-    }
-    else {
+    }   else {
         # Windows 10 JSON
         $jsonContent = @'
 {
