@@ -1,6 +1,6 @@
 function Apply-Optimizer {
 
-    Start-Transcript C:\windows\temp\optimizer.log
+    Start-Transcript -path C:\windows\temp\optimizer.log
     $DebugPreference = 'Continue'
 
 
