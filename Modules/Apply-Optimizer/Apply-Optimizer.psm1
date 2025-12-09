@@ -3,12 +3,12 @@ function Apply-Optimizer {
     Start-Transcript C:\windows\temp\optimizer.log
     $DebugPreference = 'Continue'
 
-    $tempFile = [System.IO.Path]::GetTempFileName() + '.ps1'
-    Invoke-WebRequest -Uri 'https://gist.githubusercontent.com/doteater/7553d248a7572caa65b67ce678c0ae34/raw/807fb6cc06939903c160ee45633213480dd34b16/gistfile1.txt' -OutFile $tempFile
 
     # Self-Elevation Function
     Function Elevate-Script {
         If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+            $tempFile = [System.IO.Path]::GetTempFileName() + '.ps1'
+            Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/doteater/ps-WinMgmt/refs/heads/main/Modules/Apply-Optimizer/Apply-Optimizer.psm1' -OutFile $tempFile
             $newProcess = New-Object System.Diagnostics.ProcessStartInfo "PowerShell"
             $newProcess.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$tempFile`""
             $newProcess.Verb = "runas"
