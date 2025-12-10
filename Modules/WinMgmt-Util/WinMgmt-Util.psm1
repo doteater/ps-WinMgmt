@@ -162,7 +162,8 @@ function Process-Registry {
             }
     )
 
-
+    write "profiles value beforing adding default: $profiles"
+    
     # Add Default User explicitly
     $defaultUserPath = "C:\Users\Default"
     if (Test-Path $defaultUserPath) {
@@ -206,11 +207,13 @@ function Process-Registry {
 
         # Logged-in user hive
         if (Test-Path "Registry::HKEY_USERS\$sid") {
+            write "Registry::HKEY_USERS\$sid exists, invoking registry action -FullPath $fullPath -Name $Name -Value $Value -Kind $Kind -Action $Action -UserLabel $profile.Username"
             $fullPath = "Registry::HKEY_USERS\$sid\$targetPath"
             Invoke-RegistryAction -FullPath $fullPath -Name $Name -Value $Value -Kind $Kind -Action $Action -UserLabel $profile.Username
         }
         else {
             # Logged-out user hive
+            write "Registry::HKEY_USERS\$sid doesn't exist, doing hive swap"
             $ntUserPath = Join-Path $profile.ProfilePath "NTUSER.DAT"
             if (Test-Path $ntUserPath) {
                 $tempHive = "TempHive_$($sid -replace '-','')"
