@@ -44,6 +44,10 @@ function Remove-Junk {
       "Microsoft.XboxGameOverlay"
       "Microsoft.MSPaint"
       "MicrosoftWindows.Client.WebExperience"
+      "*microsoft.office.actionsserver*"
+      "*MicrosoftWindows.CrossDevice*"
+      "*microsoft.screensketch*"
+      "*microsoft.ink*"
 
   )
   
