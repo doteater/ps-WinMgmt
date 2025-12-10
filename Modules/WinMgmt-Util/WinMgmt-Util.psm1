@@ -162,7 +162,7 @@ function Process-Registry {
             }
     )
 
-    write "profiles value beforing adding default: $profiles"
+    write "profiles value before adding default: " + $profiles
     
     # Add Default User explicitly
     $defaultUserPath = "C:\Users\Default"
