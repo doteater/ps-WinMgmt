@@ -144,21 +144,24 @@ function Process-Registry {
     $profiles = @()   # <-- initialize properly
 
     # Collect profiles from ProfileList
-    $profiles = Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList" |
-        ForEach-Object {
-            $props = Get-ItemProperty -Path $_.PSPath
-            $profilePath = $props.ProfileImagePath
-            if ($profilePath -and (Test-Path $profilePath)) {
-                $username = Split-Path $profilePath -Leaf
-                if ($systemAccounts -notcontains $username) {
-                    [PSCustomObject]@{
-                        SID         = $_.PSChildName
-                        ProfilePath = $profilePath
-                        Username    = $username
+    $profiles = @( 
+        Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList" |
+            ForEach-Object {
+                $props = Get-ItemProperty -Path $_.PSPath
+                $profilePath = $props.ProfileImagePath
+                if ($profilePath -and (Test-Path $profilePath)) {
+                    $username = Split-Path $profilePath -Leaf
+                    if ($systemAccounts -notcontains $username) {
+                        [PSCustomObject]@{
+                            SID         = $_.PSChildName
+                            ProfilePath = $profilePath
+                            Username    = $username
+                        }
                     }
                 }
             }
-        }
+    )
+
 
     # Add Default User explicitly
     $defaultUserPath = "C:\Users\Default"
