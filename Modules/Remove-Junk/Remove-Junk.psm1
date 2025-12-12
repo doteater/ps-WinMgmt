@@ -34,6 +34,7 @@ function Remove-Junk {
       "*microsoft.windowscommunicationsapps*"
       "*microsoft.windowsmaps*"
       "*microsoft.people*"
+      "*Microsoft.Windows.Cortana*"
       "Microsoft.549981C3F5F10" #cortana
       "Microsoft.Microsoft3DViewer"
       "Microsoft.Wallet"
