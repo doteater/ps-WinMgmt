@@ -132,12 +132,12 @@ function Install-VisualC {
     }
 
     # Check if another installation is in progress, then wait for it to complete
-    $MSIExecCheck = Get-Process | Where-Object { $_.ProcessName -eq 'msiexec' }
-    if ($Null -ne $MSIExecCheck) {
-        Write-Output "Another MSI installation is in progress. Waiting for process to complete..."
-        Wait-Process msiexec
-        Write-Output "Continuing installation..."
-    }
+    ##$MSIExecCheck = Get-Process | Where-Object { $_.ProcessName -eq 'msiexec' }
+    ##if ($Null -ne $MSIExecCheck) {
+    ##    Write-Output "Another MSI installation is in progress. Waiting for process to complete..."
+    ##    Wait-Process msiexec
+    ##    Write-Output "Continuing installation..."
+    ##}
 
     try {
         $Install = Start-Process "$env:Temp\vc_redist.x64.exe" -ArgumentList "/q /norestart" -Wait -PassThru
