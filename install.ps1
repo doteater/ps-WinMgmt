@@ -1,3 +1,5 @@
+set-executionpolicy unrestricted -scope process
+
 param(
     [string]$RepoUrl = "https://github.com/doteater/ps-WinMgmt/archive/refs/heads/main.zip",
     [string]$ModuleName = "WinMgmt",
