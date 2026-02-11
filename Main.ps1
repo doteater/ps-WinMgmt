@@ -1,3 +1,4 @@
+set-executionpolicy unrestricted -scope process
 Write-Host "=== ps-WinMgmt Main Script ==="
 
 # Path to the Modules folder inside WinMgmt
