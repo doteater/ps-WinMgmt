@@ -26,7 +26,7 @@ function Run-Sophia {
     Elevate-Script
     
     
-    $URL = 'https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/sc-sofia-7.1.0-260211.zip'
+    $URL = 'https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/sc-sofia-7.1.0-260212.zip'
     $filename = 'C:\windows\temp\s.zip'
     irm $URL -o $filename
     expand-archive $filename
