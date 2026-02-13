@@ -20,7 +20,7 @@ if (-not (Test-Path $allUsersModuleRoot)) {
 if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force }
 
 # Download fresh repo zip
-New-Item -ItemType Directory $stagingDir
+New-Item -ItemType Directory $stagingDir | out-null
 Invoke-RestMethod -Uri $RepoUrl -OutFile $stagingDir\repo.zip
 Expand-Archive -Path $stagingDir\repo.zip -DestinationPath $stagingDir -Force
 
