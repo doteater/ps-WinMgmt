@@ -18,7 +18,6 @@ if (-not (Test-Path $allUsersModuleRoot)) {
 
 # Clean up any previous stuff
 if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force }
-if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
 
 # Download fresh repo zip
 New-Item -ItemType Directory $stagingDir
