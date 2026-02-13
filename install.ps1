@@ -1,11 +1,11 @@
-set-executionpolicy unrestricted -scope process
-
 param(
     [string]$RepoUrl = "https://github.com/doteater/ps-WinMgmt/archive/refs/heads/main.zip",
     [string]$ModuleName = "WinMgmt",
     [ValidateSet("User","AllUsers")]
     [string]$Scope = "AllUsers"
 )
+
+set-executionpolicy unrestricted -scope process
 
 
 $stagingDir = "$Env:temp\ps-WinMgmt-staging"
@@ -16,8 +16,11 @@ if (-not (Test-Path $allUsersModuleRoot)) {
 }
 
 
-# Clean up any previous stuff
-if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force }
+# move any previous stuff out of the way
+if (Test-Path $stagingDir) { 
+    $date = get-Date -Format "yyyy-MM-dd_HH-mm"
+    Move-Item $stagingDir "$Env:temp\ps-WinMgmt-staging-$date" -force 
+}
 
 # Download fresh repo zip
 New-Item -ItemType Directory $stagingDir | out-null
@@ -59,49 +62,8 @@ Get-ChildItem -Path $sourceRoot -Directory | ForEach-Object {
 Write-Host ""
 Write-Host "Modules now available (by folder name) in all-users path:"
 Get-ChildItem -Path $allUsersModuleRoot -Directory | Select-Object -ExpandProperty name
-
 #----
 
 
 
 
-
-Write-Host "=== ps-WinMgmt Main Script ==="
-
-# Path to the Modules folder inside WinMgmt
-$moduleRoot = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "Modules"
-$subModules = Get-ChildItem -Path $moduleRoot -Directory
-
-write "found sub-modules: $submodules"
-
-foreach ($mod in $subModules) {
-    write "processing submodule $mod"
-    $modName = $mod.Name
-    $psm1 = Join-Path $mod.FullName "$modName.psm1"
-
-    if (Test-Path $psm1) {
-        try {
-            Write-Host "Importing module: $modName"
-            Import-Module $psm1 -Force -ErrorAction Stop
-
-            # Run default entry point if defined
-            $defaultFunc = "Invoke-$modName"
-            if (Get-Command $defaultFunc -ErrorAction SilentlyContinue) {
-                Write-Host "Running $defaultFunc..."
-                & $defaultFunc
-            }
-            elseif (Get-Command "Set-$modName" -ErrorAction SilentlyContinue) {
-                Write-Host "Running Set-$modName..."
-                & ("Set-$modName") -Enable $true
-            }
-            else {
-                Write-Host "No default function found for $modName, imported only."
-            }
-        }
-        catch {
-            Write-Warning "Failed to import or run $modName -  $($_.Exception.Message)"
-        }
-    }
-}
-
-Write-Host "=== ps-WinMgmt Main Script Complete ==="
