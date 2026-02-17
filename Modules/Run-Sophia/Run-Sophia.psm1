@@ -9,7 +9,7 @@ function Run-Sophia {
     
     
     $tempFile = [System.IO.Path]::GetTempFileName() + '.ps1'
-    Invoke-WebRequest -Uri 'https://github.com/doteater/my-sofia/raw/refs/heads/main/run.ps1' -OutFile $tempFile
+    Invoke-WebRequest -Uri 'https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/Modules/Run-Sophia/Run-Sophia.psm1' -OutFile $tempFile
     
     # Self-Elevation Function
     Function Elevate-Script {
