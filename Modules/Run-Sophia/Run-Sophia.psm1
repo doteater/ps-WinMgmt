@@ -33,5 +33,7 @@ function Run-Sophia {
     expand-archive $filename -destinationpath $timestamp
     get-childitem -recurse .\$timestamp | unblock-file
     cd $timestamp\sc-sofia*\Sophia_Script_for_Windows_11*
+    set-executionpolicy unrestricted -scope process
+
     .\sophia.ps1
 }
