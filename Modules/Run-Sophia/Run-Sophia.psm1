@@ -29,8 +29,9 @@ function Run-Sophia {
     $URL = 'https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/sc-sofia-7.1.1-260217.zip'
     $filename = 'C:\windows\temp\s.zip'
     irm $URL -o $filename
-    expand-archive $filename
-    get-childitem -recurse .\s | unblock-file
-    cd s\sc-sofia*\Sophia.Script.for.Windows.11*\Sophia_Script_for_Windows_11*
+    $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+    expand-archive $filename -destinationpath $timestamp
+    get-childitem -recurse .\$timestamp | unblock-file
+    cd $timestamp\sc-sofia*\Sophia_Script_for_Windows_11*
     .\sophia.ps1
 }
