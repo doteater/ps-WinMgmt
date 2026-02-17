@@ -191,14 +191,14 @@ function Process-Registry {
             $ntUserPath = Join-Path $profile.ProfilePath "NTUSER.DAT"
             if (Test-Path $ntUserPath) {
                 $tempHive = "TempHive_Default"
-                $loadResult = & reg load "HKLM\$tempHive" $ntUserPath 2>&1
+                $loadResult = & "${env:windir}\System32\reg.exe" load  "HKLM\$tempHive" $ntUserPath 2>&1
                 if ($LASTEXITCODE -eq 0) {
                     try {
                         $fullPath = "Registry::HKEY_LOCAL_MACHINE\$tempHive\$targetPath"
                         Invoke-RegistryAction -FullPath $fullPath -Name $Name -Value $Value -Kind $Kind -Action $Action -UserLabel "Default User"
                     }
                     finally {
-                        & reg unload "HKLM\$tempHive" | Out-Null
+                        & "${env:windir}\System32\reg.exe" unload "HKLM\$tempHive" | Out-Null
                     }
                 }
             }
@@ -217,14 +217,14 @@ function Process-Registry {
             $ntUserPath = Join-Path $profile.ProfilePath "NTUSER.DAT"
             if (Test-Path $ntUserPath) {
                 $tempHive = "TempHive_$($sid -replace '-','')"
-                $loadResult = & reg load "HKLM\$tempHive" $ntUserPath 2>&1
+                $loadResult = & "${env:windir}\System32\reg.exe" load  "HKLM\$tempHive" $ntUserPath 2>&1
                 if ($LASTEXITCODE -eq 0) {
                     try {
                         $fullPath = "Registry::HKEY_LOCAL_MACHINE\$tempHive\$targetPath"
                         Invoke-RegistryAction -FullPath $fullPath -Name $Name -Value $Value -Kind $Kind -Action $Action -UserLabel $profile.Username
                     }
                     finally {
-                        & reg unload "HKLM\$tempHive" | Out-Null
+                        & "${env:windir}\System32\reg.exe" unload "HKLM\$tempHive" | Out-Null
                     }
                 }
             }

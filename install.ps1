@@ -5,6 +5,8 @@ param(
     [string]$Scope = "AllUsers"
 )
 
+set-executionpolicy unrestricted -scope process
+
 
 $stagingDir = "$Env:temp\ps-WinMgmt-staging"
 
@@ -14,12 +16,14 @@ if (-not (Test-Path $allUsersModuleRoot)) {
 }
 
 
-# Clean up any previous stuff
-if (Test-Path $stagingDir) { Remove-Item $stagingDir -Recurse -Force }
-if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
+# move any previous stuff out of the way
+if (Test-Path $stagingDir) { 
+    $date = get-Date -Format "yyyy-MM-dd_HH-mm"
+    Move-Item $stagingDir "$Env:temp\ps-WinMgmt-staging-$date" -force 
+}
 
 # Download fresh repo zip
-New-Item -ItemType Directory $stagingDir
+New-Item -ItemType Directory $stagingDir | out-null
 Invoke-RestMethod -Uri $RepoUrl -OutFile $stagingDir\repo.zip
 Expand-Archive -Path $stagingDir\repo.zip -DestinationPath $stagingDir -Force
 
@@ -58,5 +62,8 @@ Get-ChildItem -Path $sourceRoot -Directory | ForEach-Object {
 Write-Host ""
 Write-Host "Modules now available (by folder name) in all-users path:"
 Get-ChildItem -Path $allUsersModuleRoot -Directory | Select-Object -ExpandProperty name
-
 #----
+
+
+
+
