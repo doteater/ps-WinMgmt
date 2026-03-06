@@ -3,6 +3,16 @@ function Apply-Policies {
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "Software\Policies\Microsoft\MicrosoftAccount" "DisableUserAuth" 1 DWord
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" "NoConnectedUser" 3 DWord
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowYourAccount" "value" 0 DWord
+  # kill consumer/MSA nudges & Spotlight-driven prompts ---
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableConsumerAccountStateContent" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableCloudOptimizedContent" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableSoftLanding" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1 DWord
+  # nuke Spotlight surfaces that also carry MSA upsell
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsSpotlightFeatures" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsSpotlightOnActionCenter" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsSpotlightOnSettings" 1 DWord
+  Set-RegistryValue "HKEY_LOCAL_MACHINE" "SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsSpotlightWindowsWelcomeExperience" 1 DWord
   
   #prevent enabling bitlocker
   Set-RegistryValue "HKEY_LOCAL_MACHINE" "SYSTEM\CurrentControlSet\Control\BitLocker" "PreventDeviceEncryption" 1 DWord
