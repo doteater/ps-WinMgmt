@@ -5,7 +5,7 @@ function Install-Winget-For-System {
         $stageFolder = "${env:WinDir}\\Temp\\WinGet-Stage"
         $bundlePath = "$stageFolder\\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
 
-        $wingetInstalled = Get-ItemProperty -Path C:\ProgramData\Microsoft.DesktopAppInstaller\winget.exe
+        $wingetInstalled = Get-ItemProperty -Path C:\ProgramData\Microsoft.DesktopAppInstaller\winget.exe -ErrorAction SilentlyContinue
 
         if($wingetInstalled) {
             write "SYSTEM winget already installed, defining winget() passthru function only"
@@ -72,7 +72,9 @@ function Install-Winget-For-System {
             Write-Host "Downloading 7zip CLI executable..."
             New-Item -ItemType Directory -Path $7zipFolder -Force | Out-Null
             Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7zr.exe -OutFile "$7zipFolder\\7zr.exe"
-            Invoke-WebRequest -UseBasicParsing -Uri https://www.7-zip.org/a/7z2408-extra.7z -OutFile "$7zipFolder\\7zr-extra.7z"
+            $versionLine = & "$7zipFolder\7zr.exe" | Select-Object -First 2
+            $version = [string]$versionLine.split(' ')[3].replace('.','')
+            Invoke-WebRequest -UseBasicParsing -Uri "https://www.7-zip.org/a/7z$version-extra.7z" -OutFile "$7zipFolder\\7zr-extra.7z"
             Write-Host "Extracting 7zip CLI executable to ${7zipFolder}..."
             & "$7zipFolder\\7zr.exe" x "$7zipFolder\\7zr-extra.7z" -o"$7zipFolder" -y
         }
@@ -169,7 +171,7 @@ function Install-VisualC {
     )
 
     # Path to winget.exe (adjust if needed)
-    $wingetPath = "C:\ProgramData\Microsoft.DesktopAppInstaller\winget.exe"
+    $wingetPath = "C:\Users\SentraCam\AppData\Local\Microsoft\WindowsApps\winget.exe"
 
     # Call winget.exe with all arguments passed through
     & $wingetPath @Args
