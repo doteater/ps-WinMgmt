@@ -171,7 +171,8 @@ function Install-VisualC {
     )
 
     # Path to winget.exe (adjust if needed)
-    $wingetPath = "C:\Users\SentraCam\AppData\Local\Microsoft\WindowsApps\winget.exe"
+    #$wingetPath = "C:\Users\SentraCam\AppData\Local\Microsoft\WindowsApps\winget.exe"
+    $wingetPath = $env:LOCALAPPDATA\Microsoft\WindowsApps\winget.exe
 
     # Call winget.exe with all arguments passed through
     & $wingetPath @Args
