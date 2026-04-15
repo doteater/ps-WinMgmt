@@ -28,7 +28,7 @@ function Run-Sophia {
     
     
     $URL = "https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/$sophiazip"
-    $filename = 'C:\windows\temp\s.zip'
+    $filename = "$env:TEMP\s.zip"
     irm $URL -o $filename
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
     expand-archive $filename -destinationpath $timestamp
