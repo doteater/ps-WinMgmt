@@ -3,7 +3,7 @@ function Run-Sophia {
     $sophiazip = "sc-sophia-7.1.5-260415.zip"
     $ep = get-executionpolicy
     
-    write "ep: $ep"
+    #write "ep: $ep"
     
     Start-Transcript "$env:TEMP\sophia.log"
     $DebugPreference = 'Continue'
