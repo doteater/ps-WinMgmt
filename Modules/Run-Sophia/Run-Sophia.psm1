@@ -5,7 +5,7 @@ function Run-Sophia {
     
     write "ep: $ep"
     
-    Start-Transcript C:\windows\temp\sophia.log
+    Start-Transcript "$env:TEMP\sophia.log"
     $DebugPreference = 'Continue'
     
     
