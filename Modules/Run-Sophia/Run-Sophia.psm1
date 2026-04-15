@@ -1,5 +1,6 @@
 set-executionpolicy unrestricted -scope process
 function Run-Sophia {
+    $sophiazip = "sc-sophia-7.1.5-260415.zip"
     $ep = get-executionpolicy
     
     write "ep: $ep"
@@ -26,7 +27,7 @@ function Run-Sophia {
     Elevate-Script
     
     
-    $URL = 'https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/sc-sophia-7.1.4.zip'
+    $URL = "https://github.com/doteater/ps-WinMgmt/raw/refs/heads/main/$sophiazip"
     $filename = 'C:\windows\temp\s.zip'
     irm $URL -o $filename
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
