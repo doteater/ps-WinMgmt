@@ -5,7 +5,7 @@ function Run-Sophia {
     
     #write "ep: $ep"
     
-    Start-Transcript "$env:TEMP\sophia.log"
+    #Start-Transcript "$env:TEMP\sophia.log"
     $DebugPreference = 'Continue'
     
     
@@ -33,7 +33,7 @@ function Run-Sophia {
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
     expand-archive $filename -destinationpath $timestamp
     get-childitem -recurse .\$timestamp | unblock-file
-    cd $timestamp\Sophia.Script.for.Windows.11.*\
+    cd $timestamp\Sophia.Script.for.Windows.11.*\Sophia_Script_for_Windows_11_*
     set-executionpolicy unrestricted -scope process
 
     .\sophia.ps1
