@@ -1,6 +1,6 @@
 set-executionpolicy unrestricted -scope process
 function Run-Sophia {
-    $sophiazip = "sc-sophia-7.1.5-260416.3.zip"
+    $sophiazip = "sc-sophia-7.1.5-260416.4.zip"
     $ep = get-executionpolicy
     
     #write "ep: $ep"
