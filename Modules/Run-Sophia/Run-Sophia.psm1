@@ -1,7 +1,8 @@
 set-executionpolicy unrestricted -scope process
 function Run-Sophia {
     #$sophiazip = "sc-sophia-7.1.5-260416.4.zip"
-    $sophiazip = "sc-sophia-7.1.6-260625.3.zip"
+    #$sophiazip = "sc-sophia-7.1.6-260625.3.zip"
+    $sophiazip = "new.zip"
     $ep = get-executionpolicy
     
     #write "ep: $ep"
@@ -34,7 +35,8 @@ function Run-Sophia {
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
     expand-archive $filename -destinationpath $timestamp
     get-childitem -recurse .\$timestamp | unblock-file
-    cd $timestamp\Sophia.Script.for.Windows.11.*\Sophia_Script_for_Windows_11_*
+    #cd $timestamp\Sophia.Script.for.Windows.11.*\Sophia_Script_for_Windows_11_*
+    cd $timestamp
     set-executionpolicy unrestricted -scope process
 
     .\sophia.ps1
