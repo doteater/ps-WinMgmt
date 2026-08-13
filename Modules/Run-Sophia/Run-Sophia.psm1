@@ -3,7 +3,7 @@ function Run-Sophia {
     #$sophiazip = "sc-sophia-7.1.5-260416.4.zip"
     #$sophiazip = "sc-sophia-7.1.6-260625.3.zip"
 ##    $sophiazip = "sc-sophia-260625.8.zip"
-    $sophiazip = "sc-sophia-260812.0.zip"
+    $sophiazip = "sc-sophia-260812.1.zip"
     $ep = get-executionpolicy
     
     #write "ep: $ep"
